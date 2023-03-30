@@ -32,7 +32,7 @@ class BullHornAdapter:
         #browser["username"] = "lperez123"
         #browser["password"] = "Systems22!*"
         browser["username"] = "captivateiq.api"
-        browser["password"] = "BhCiq2022!*"
+        browser["password"] = "BhCiq2023!*"
 
         response = browser.submit_selected()
         print("Response")
@@ -49,6 +49,21 @@ class BullHornAdapter:
         parsed_url = urlparse(new_url)
         captured_value = parse_qs(parsed_url.query)['code'][0]
         print(captured_value)
+        flag =False
+        while(flag == False):
+            print('while(flag == False):')
+            browser.open("https://rest.bullhornstaffing.com/oauth/authorize?client_id=f8a61111-51a6-42c4-8e1f-08dd9dc2f463&response_type=code&action=Login&username=captivateiq.api&password=BhCiq2022!*&state=demo")
+            print("Request")
+            new_url = browser.get_url()
+            print('new_url',new_url)
+            parsed_url = urlparse(new_url)
+            try: 
+                captured_value = parse_qs(parsed_url.query)['code'][0]
+                print('Captured Value',captured_value)    
+                flag= True #cambiar a 
+            except:
+                print("parsed_url error",parsed_url)
+                code_value= False
 
         return captured_value
 

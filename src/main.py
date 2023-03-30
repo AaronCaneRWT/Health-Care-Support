@@ -15,6 +15,9 @@ bullhorn_client_id = os.environ.get('BULLHORN_CLIENT_ID')
 bullhorn_client_secret = os.environ.get('BULLHORN_CLIENT_SECRET')
 
 
+bullhorn_client_id = "f8a61111-51a6-42c4-8e1f-08dd9dc2f463"
+bullhorn_client_secret ="aQqr6rXTo61QWARgNjOSZWts"
+
 def transform_direct_hires(data):
     result = []
     employment_type = data['employmentType']
@@ -42,6 +45,8 @@ def transform_direct_hires(data):
     for item in range(len(data['commissions']['data'])):
         split = data['commissions']['data'][item]['commissionPercentage']
         role = data['commissions']['data'][item]['role']
+        if role == "":
+            role = "Empty"
         recipient_name = data['commissions']['data'][item]['user']['firstName'] + \
             " " + \
             data['commissions']['data'][item]['user']['lastName']
@@ -76,12 +81,26 @@ def transform_feed_contract(jsonContract_general_data, jsonContract_allEarnCodes
     Candidate_ID = jsonContract_general_data['candidate']['id']
     Candidate_Name = jsonContract_general_data['candidate']['firstName'] + \
         " "+jsonContract_general_data['candidate']['lastName']
+    if Candidate_ID == "":
+        Candidate_ID = "Empty"
     Candidate_Title = jsonContract_general_data['jobOrder']['title']
+    if Candidate_Title  == "":
+        Candidate_Title = "Empty"
     Placement_ID = jsonContract_general_data['id']
+    if Placement_ID == "":
+        Placement_ID = "Empty"
     Company_ID = jsonContract_general_data['jobOrder']['clientCorporation']['id']
+    if Company_ID == "":
+        Company_ID = "Empty"
     Company_Name = jsonContract_general_data['jobOrder']['clientCorporation']['name']
+    if Company_Name =="":
+        Company_Name ="Empty"
     Employment_Type = jsonContract_general_data['employmentType']
+    if Employment_Type =="":
+        Employment_Type = "Empty"
     Burden_Rate = float(jsonContract_general_data['customText5'])/100
+    if Burden_Rate =="":
+        Burden_Rate = .999
     Period_End_Date = totalHours['periodEndDate']
     Placement_Start_Date = jsonContract_general_data['dateBegin']
     Placement_Start_Date = Placement_Start_Date / 1000
@@ -90,12 +109,20 @@ def transform_feed_contract(jsonContract_general_data, jsonContract_allEarnCodes
     for commissionOwner in range(len(jsonContract_general_data['commissions']['data'])):
         Commission_Split_Pct = jsonContract_general_data[
             'commissions']['data'][commissionOwner]['commissionPercentage']
+        if Commission_Split_Pct == "":
+            Commission_Split_Pct = .999
         Role = jsonContract_general_data['commissions']['data'][commissionOwner]['role']
+        if Role == "":
+            Role = "Empty"
+        print(Role)
         Bullhorn_ID = jsonContract_general_data['commissions']['data'][commissionOwner]['user']['id']
+        if Bullhorn_ID == "":
+            Bullhorn_ID = "Empty"
         Recipient_Name = jsonContract_general_data['commissions']['data'][commissionOwner]['user']['firstName'] + \
             " " + \
             jsonContract_general_data['commissions']['data'][commissionOwner]['user']['lastName']
-
+        if Recipient_Name =="":
+            Recipient_Name = "Empty"
         for earnCodeCounter in range(len(jsonContract_allEarnCodes[0]['placementRateCardLineGroups']['data'])):
             for item in range(len(jsonContract_allEarnCodes[0]['placementRateCardLineGroups']['data'][earnCodeCounter]['placementRateCardLines']['data'])):
                 Bill_Rate = jsonContract_allEarnCodes[0]['placementRateCardLineGroups'][
@@ -106,8 +133,12 @@ def transform_feed_contract(jsonContract_general_data, jsonContract_allEarnCodes
 
                 Pay_Rate = jsonContract_allEarnCodes[0]['placementRateCardLineGroups'][
                     'data'][earnCodeCounter]['placementRateCardLines']['data'][item]['payRate']
+                if Pay_Rate == "":
+                    Pay_Rate = 9999
                 Earn_Code = jsonContract_allEarnCodes[0]['placementRateCardLineGroups'][
                     'data'][earnCodeCounter]['placementRateCardLines']['data'][item]['earnCode']['code']
+                if Earn_Code =="":
+                    Earn_Code = "Empty"
                 Hours_Worked = 0
                 for item in totalHours['data']:
                     earncode = item['earnCode']['code']
@@ -177,7 +208,7 @@ def handler(event, context):
     repository = EntitiesRepository()
 
 
-if __name__ =="__main__":
+if __name__ =="__main__":  
     print("Starting")
     bullhorn_adapter = BullHornAdapter(
         bullhorn_client_id, bullhorn_client_secret)
@@ -282,4 +313,4 @@ if __name__ =="__main__":
                     #line = elements[element_counter]['ID']+", "+elements[element_counter]['Recipient Name']+", "+elements[element_counter]['Placement Type']+", "+str(elements[element_counter]['Split'])+", "+elements[element_counter]['Role']+", "+elements[element_counter]['Employment Type']+", "+elements[element_counter]['Company Name']+", "+elements[element_counter]['Candidate Name']+", "+elements[element_counter]['Candidate Title']+", "+str(elements[element_counter]['Week End Apply Date'])+", "+str(elements[element_counter]['Guarantee Period'])+", "+str(elements[element_counter]['Placement Start Date'])+", "+str(elements[element_counter]['Placement Completed'])+", "+str(elements[element_counter]['Direct Hire Fee'])+", "+elements[element_counter]['Placement Completed Date']
                     #print(line)
                     captivate_adapter.createCIQ(url, elements[element_counter])
-    repository = EntitiesRepository()
+        repository = EntitiesRepository()

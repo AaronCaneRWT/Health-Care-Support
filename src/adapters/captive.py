@@ -34,12 +34,12 @@ class CaptiveAdapter:
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Token ".format(self.token)
+            "Authorization": "Token ".format(self.token),
+            "Authorization": "Token a38b58a6659006a0d66f52ef144b9b9139b299a9491d6d7f41"
         }
         response = requests.post(url, headers=headers, json=element)
         responseDict = response.json() 
         #print(response.status_code,response.text) 
-
         if response.status_code == 201:
             line = responseDict['id'] + " " + responseDict['data']['ID']
             print("Create: id", line)
